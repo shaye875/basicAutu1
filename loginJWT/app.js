@@ -2,20 +2,21 @@ import bcrypt from 'bcrypt'
 import cookiparser from 'cookie-parser'
 import jwt from 'jsonwebtoken'
 import express from 'express'
+import 'dotenv/config'
 
-export const JWT = express()
+export const router = express.Router()
 
 const users = [
  {
     id: 1,
     username: "moshe",
-    password: "djcsjcskjejffjeprfe.3r4rjdlkjeiwehcwiedi302#@#Dwevcjdshsdcsc", // Hashed
+    password: "djcsjcskjejffjeprfe.3r4rjdlkjeiwehcwiedi302#@#Dwevcjdshsdcsc",
     role: "admin",
     email: "moshe@gmail.com"
   },
 ]
 
-JWT.post("/login", (req, res) => {
+router.post("/", (req, res) => {
   const { username, password } = req.body;
   const user = users.find(
     async(u) => u.username === username && 
@@ -39,11 +40,8 @@ res.cookie("token", token, {httpOnly: true, sameSite: true})
 });
 
 export function verifyToken(req, res, next) {
-    
-    
   const token = req.cookies["token"]
-  if (!token) return res.sendStatus(401);
-
+  if (!token) return res.sendStatus(401)
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return res.sendStatus(403);
     req.user = decoded

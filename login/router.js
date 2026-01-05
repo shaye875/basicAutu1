@@ -1,11 +1,14 @@
 import { checkWriteUser } from './post.js'
 import { selectAll } from './queries.js'
+import { verifyToken } from '../loginJWT/app.js'
 
 import express from 'express'
 
 export const user = express()
 
-user.post("/",async(req,res)=>{
+user.post("/",verifyToken,async(req,res)=>{
+    console.log(req.user);
+    
     const body = req.body
     const result = await checkWriteUser(body)
     for(let key in result){
